@@ -3,10 +3,18 @@ var mqtt = require('mqtt');
 var router = express.Router();
 var url = require('url');
 var moment = require('moment');
+const OpenWeatherMapHelper = require("openweathermap-node");
+const helper = new OpenWeatherMapHelper(
+  {
+      APPID: '7acb743186c037efec372edf559ab390',
+      units: "metric"
+  }
+);
 
 var mqtt_url = process.env.CLOUDMQTT_URL || 'mqtt://bgntjbve:ePEQceGyUOu6@m24.cloudmqtt.com:12728';
 var topic = process.env.CLOUDMQTT_TOPIC || '/data';
 var client = mqtt.connect(mqtt_url);
+var seaLevelPressure = 101325
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -50,10 +58,17 @@ client.on('connect', function() {
         const d = msg.toString().split(';');
         const temperature = d[0];
         const pressure = parseFloat(d[1]);
-        const altitude = ((1 - Math.pow(pressure / 101325, 1 / 5.25588)) / 0.0000225577).toFixed(2);
-        console.log(pressure);
-        console.log(altitude);
-        res.write("data: " + altitude + ": " + moment().format('HH:mm:ss') + "\n\n");
+        helper.getCurrentWeatherByGeoCoordinates(46.267907, 13.594521, (err, currentWeather) => {
+          if(err){
+              console.log(err);
+          }
+          else{
+              seaLevelPressure = currentWeather.main.pressure * 100
+              console.log(seaLevelPressure);
+              const altitude = ((1 - Math.pow(pressure / seaLevelPressure, 1 / 5.25588)) / 0.0000225577).toFixed(2);
+              res.write("data: " + altitude + ": " + moment().format('HH:mm:ss') + "\n\n");      
+          }
+        });
       });
     });
   });

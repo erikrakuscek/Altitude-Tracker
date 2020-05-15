@@ -13,6 +13,7 @@
     "moment": "^2.25.3",
     "morgan": "~1.9.1",
     "mqtt": "^2.15.0",
+    "openweathermap-node": "^1.1.2",
     "pug": "^2.0.4",
     "serve-favicon": "~2.4.5"
   }
