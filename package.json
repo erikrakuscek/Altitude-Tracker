@@ -10,7 +10,7 @@
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "^4.17.1",
-    "moment": "^2.25.3",
+    "moment": "^2.29.2",
     "morgan": "~1.9.1",
     "mqtt": "^2.15.0",
     "openweathermap-node": "^1.1.2",
